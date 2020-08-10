@@ -1,1 +1,1 @@
-web: PhoneInfoga
+web: bin/PhoneInfoga
