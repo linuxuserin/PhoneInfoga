@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gopkg.in/sundowndev/phoneinfoga.v2/pkg/scanners"
+	"gopkg.in/sundowndev/phoneinfoga.v2/scanners"
 )
 
 // JSONResponse is the default API response type
@@ -22,7 +22,7 @@ func ValidateScanURL(c *gin.Context) {
 	var v scanURL
 
 	if err := c.ShouldBindUri(&v); err != nil {
-		errorHandling(c, "Parameter 'number' must be a valid integer.")
+		errorHandling(c, err.Error())
 		return
 	}
 

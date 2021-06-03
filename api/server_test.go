@@ -9,8 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	assertTest "github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
-	"gopkg.in/sundowndev/phoneinfoga.v2/pkg/config"
-	"gopkg.in/sundowndev/phoneinfoga.v2/pkg/scanners"
+	"gopkg.in/sundowndev/phoneinfoga.v2/scanners"
 )
 
 var r *gin.Engine
@@ -41,21 +40,21 @@ func TestApi(t *testing.T) {
 	r = gin.Default()
 	r = Serve(r, false)
 
-	t.Run("detectContentType", func(t *testing.T) {
-		contentType := detectContentType("/file.hash.css", []byte{})
-		assert.Equal("text/css", contentType, "should be equal")
-
-		contentType = detectContentType("/file.hash.js", []byte{})
-		assert.Equal("application/javascript", contentType, "should be equal")
-
-		contentType = detectContentType("/file.hash.svg", []byte{})
-		assert.Equal("image/svg+xml", contentType, "should be equal")
-
-		contentType = detectContentType("/file.html", []byte("<html></html>"))
-		assert.Equal("text/html; charset=utf-8", contentType, "should be equal")
-	})
-
 	t.Run("Serve", func(t *testing.T) {
+		t.Run("detectContentType", func(t *testing.T) {
+			contentType := detectContentType("/file.hash.css", []byte{})
+			assert.Equal("text/css; charset=utf-8", contentType, "should be equal")
+
+			contentType = detectContentType("/file.hash.js", []byte{})
+			assert.Equal("application/javascript", contentType, "should be equal")
+
+			contentType = detectContentType("/file.hash.svg", []byte{})
+			assert.Equal("image/svg+xml", contentType, "should be equal")
+
+			contentType = detectContentType("/file.html", []byte("<html></html>"))
+			assert.Equal("text/html; charset=utf-8", contentType, "should be equal")
+		})
+
 		t.Run("getAllNumbers - /api/numbers", func(t *testing.T) {
 			res, err := performRequest(r, "GET", "/api/numbers")
 
@@ -84,7 +83,7 @@ func TestApi(t *testing.T) {
 
 				assert.Equal(err, nil, "should be equal")
 				assert.Equal(res.Result().StatusCode, 400, "should be equal")
-				assert.Equal(string(body), "{\"success\":false,\"error\":\"Parameter 'number' must be a valid integer.\"}", "should be equal")
+				assert.Equal( "{\"success\":false,\"error\":\"strconv.ParseUint: parsing \\\"azerty\\\": invalid syntax\"}", string(body))
 			})
 
 			t.Run("invalid country code", func(t *testing.T) {
@@ -208,20 +207,20 @@ func TestApi(t *testing.T) {
 
 		t.Run("healthHandler - /api/", func(t *testing.T) {
 			res, err := performRequest(r, "GET", "/api/")
+			assert.Equal(nil, err, "should be equal")
 
 			body, _ := ioutil.ReadAll(res.Body)
 
-			assert.Equal(nil, err, "should be equal")
 			assert.Equal(200, res.Result().StatusCode, "should be equal")
-			assert.Equal("{\"success\":true,\"version\":\""+config.Version+"\"}", string(body), "should be equal")
+			assert.Equal("{\"success\":true,\"version\":\"unknown\",\"commit\":\"unknown\"}", string(body), "should be equal")
 		})
 
 		t.Run("404 error - /api/notfound", func(t *testing.T) {
 			res, err := performRequest(r, "GET", "/api/notfound")
+			assert.Equal(err, nil, "should be equal")
 
 			body, _ := ioutil.ReadAll(res.Body)
 
-			assert.Equal(err, nil, "should be equal")
 			assert.Equal(res.Result().StatusCode, 404, "should be equal")
 			assert.Equal(string(body), "{\"success\":false,\"error\":\"Resource not found\"}", "should be equal")
 		})

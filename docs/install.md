@@ -1,37 +1,35 @@
 To install PhoneInfoga, you'll need to download the binary or build the software from its source code.
 
 !!! info
-    For now, only Linux, MacOS and Windows are supported. If you don't see your OS/arch on the [release page on GitHub](https://github.com/sundowndev/PhoneInfoga/releases), it means it's not explicitly supported. You can build from source by yourself anyway. Want your OS to be supported ? Please [open an issue on GitHub](https://github.com/sundowndev/PhoneInfoga/issues).
+    For now, only Linux, MacOS and Windows are supported. If you don't see your OS/arch on the [release page on GitHub](https://github.com/sundowndev/phoneinfoga/releases), it means it's not explicitly supported. You can build from source by yourself anyway. Want your OS to be supported ? Please [open an issue on GitHub](https://github.com/sundowndev/phoneinfoga/issues).
 
 ## Binary installation (recommanded)
 
 Follow the instructions :
 
-- Go to [release page on GitHub](https://github.com/sundowndev/PhoneInfoga/releases)
+- Go to [release page on GitHub](https://github.com/sundowndev/phoneinfoga/releases)
 - Choose your OS and architecture
 - Download the archive, extract the binary then run it in a terminal
 
-You can also do it from the terminal:
+You can also do it from the terminal (UNIX systems only) :
 
 ```shell
-# Download the archive
-wget "https://github.com/sundowndev/phoneinfoga/releases/download/v2.3.0/phoneinfoga_$(uname -s)_$(uname -m).tar.gz"
-
-# Extract the binary
-tar xfv "phoneinfoga_$(uname -s)_$(uname -m).tar.gz"
+# Download latest release in the current directory
+curl -sSL https://raw.githubusercontent.com/sundowndev/phoneinfoga/master/support/scripts/install | bash
 
 # Check the binary
 ./phoneinfoga version
 
 # You can also install it globally
-mv ./phoneinfoga /usr/bin/phoneinfoga
+sudo mv ./phoneinfoga /usr/bin/phoneinfoga
 ```
 
-If the installation fails with a 404 error, it probably means your OS/arch is not suppored.
-
-Please check the output of `echo "$(uname -s)_$(uname -m)"` in your terminal and see if it's available on the [GitHub release page](https://github.com/sundowndev/PhoneInfoga/releases).
+To ensure your system is supported, please check the output of `echo "$(uname -s)_$(uname -m)"` in your terminal and see if it's available on the [GitHub release page](https://github.com/sundowndev/phoneinfoga/releases).
 
 ## Using Docker
+
+!!! info
+    Be careful when using `latest` tag, it's updated directly from the master branch. We recommend using [`v2` or `stable` tags](https://hub.docker.com/r/sundowndev/phoneinfoga/tags) to only get release updates.
 
 ### From docker hub
 

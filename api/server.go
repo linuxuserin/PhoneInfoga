@@ -1,8 +1,11 @@
 // Package api is about the REST API of PhoneInfoga
-//go:generate $GOPATH/bin/go-assets-builder ../client/dist -o ./assets.go -p api
+//go:generate go run github.com/jessevdk/go-assets-builder ../client/dist -o ./assets.go -p api
+//go:generate go run github.com/swaggo/swag/cmd/swag init -g ./server.go --parseDependency
 package api
 
 import (
+	"fmt"
+	"mime"
 	"net/http"
 	"strings"
 
@@ -14,20 +17,24 @@ const (
 	staticPath     = "/"
 )
 
+// @title PhoneInfoga REST API
+// @description Advanced information gathering & OSINT framework for phone numbers.
+// @version v2
+// @host demo.phoneinfoga.crvx.fr
+// @BasePath /api
+// @schemes http https
+// @license.name GNU General Public License v3.0
+// @license.url https://github.com/sundowndev/phoneinfoga/blob/master/LICENSE
+
 func detectContentType(path string, data []byte) string {
 	arr := strings.Split(path, ".")
 	ext := arr[len(arr)-1]
 
-	switch ext {
-	case "js":
-		return "application/javascript"
-	case "css":
-		return "text/css"
-	case "svg":
-		return "image/svg+xml"
-	default:
-		return http.DetectContentType(data)
+	if mimeType := mime.TypeByExtension(fmt.Sprintf(".%s", ext)); mimeType != "" {
+		return mimeType
 	}
+
+	return http.DetectContentType(data)
 }
 
 func registerClientRoute(router *gin.Engine) {
